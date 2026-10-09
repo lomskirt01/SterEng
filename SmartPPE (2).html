@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Smart PPE | Automatic Workplace Monitoring</title><style>
+:root{font-family:Inter,Segoe UI,Arial,sans-serif;color:#e9f3ff;background:#070d19}*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#070d19,#0d1a2d);min-height:100vh}button,select,input{font:inherit}button{cursor:pointer;border:0;border-radius:10px;padding:12px 16px;font-weight:700;background:#18304a;color:#e6f4ff}button.primary{background:#18c7be;color:#051927}button.danger{background:#eb5266;color:white}button:disabled{opacity:.45;cursor:not-allowed}select{border:1px solid #344a62;background:#101d30;color:#e9f3ff;border-radius:9px;padding:11px;min-width:160px;width:100%}header{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #273750;padding:22px clamp(18px,4vw,48px)}header h1{font-size:21px;margin:0;letter-spacing:.6px}header h1 span{color:#26d4cb}.tag{font-size:12px;color:#92aac1}.shell{max-width:1450px;margin:22px auto;padding:0 20px}.toolbar{display:grid;grid-template-columns:minmax(150px,1fr) minmax(200px,1.2fr) minmax(150px,1fr) auto auto auto;gap:12px;align-items:end;background:#111e32;border:1px solid #28405a;padding:18px;border-radius:16px}.field label{display:block;font-size:11px;letter-spacing:1px;color:#a9bfd8;font-weight:700;margin-bottom:7px}.content{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(320px,1fr);gap:16px;margin-top:17px}.panel{border:1px solid #28405a;border-radius:16px;background:#111e32;overflow:hidden}.panel h2{font-size:14px;margin:0;padding:16px 18px;border-bottom:1px solid #263e55;letter-spacing:.4px}.camera{position:relative;background:#020612;aspect-ratio:16/10;overflow:hidden}.camera video,.camera canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}.camera canvas{pointer-events:none}.empty{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:#7790a8;text-align:center;padding:30px}.camhint{position:absolute;bottom:14px;left:14px;background:#030e1abf;padding:9px 12px;border-radius:9px;font-size:12px}.smallfooter{display:flex;justify-content:space-between;gap:12px;padding:13px 18px;color:#a7bdd1;font-size:12px}.status{padding:22px;margin:18px;border-radius:14px;background:#102b35;border:1px solid #226c69}.status strong{display:block;font-size:23px;margin-bottom:8px}.status small{color:#b4c9d5;line-height:1.5}.status.red{background:#511a27;border-color:#ff4d67;animation:pulse 1s alternate 2}.status.red strong{color:#ffa0ac}.status.amber{background:#382d19;border-color:#9a7731}.status.amber strong{color:#f9d67c}.status.green{background:#123626;border-color:#27c58d;animation:pulseGreen 1s alternate 2}.status.green strong{color:#9cf3d5}@keyframes pulse{to{box-shadow:0 0 0 4px #fb516122}}@keyframes pulseGreen{to{box-shadow:0 0 0 4px #23cb8a22}}.summary{padding:0 18px 16px;color:#9cb7ce;font-size:13px}.items{padding:3px 18px 20px}.item{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 2px;border-bottom:1px solid #23384d}.item strong{display:block;font-size:14px}.item small{display:block;margin-top:4px;color:#849db4;line-height:1.45}.pill{font-size:11px;white-space:nowrap;border-radius:20px;background:#243c55;padding:6px 10px;color:#b9cede}.pill.good{background:#154b42;color:#77eed0}.pill.bad{background:#602334;color:#ffb3c0}.pill.unknown{background:#493d26;color:#ead29b}.legend{padding:15px 18px;font-size:12px;line-height:1.6;color:#8faac0}.notice{margin:16px 0 26px;border:1px solid #38506c;background:#122137;border-radius:12px;padding:13px 16px;font-size:13px;line-height:1.6;color:#bdd0e0}.bottom{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin:13px 0}.bottom input{accent-color:#23c8c0}#message{font-size:12px;color:#bed2e2;flex:1}.modalbg{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:#03050bd9;z-index:10;padding:20px}.modal{max-width:470px;width:100%;border:2px solid #f65c70;border-radius:18px;background:#321522;padding:25px;text-align:center}.modal h2{font-size:29px;margin:0 0 10px;color:#ffc0c7}.modal p{line-height:1.6}.modal button{margin-top:10px;background:#e94b61}.modal.success{border-color:#28c78f;background:#123326}.modal.success h2{color:#a6f6db}.modal.success button{background:#28b684}.footer{font-size:11px;color:#7895ad;padding:16px 0 30px} @media(max-width:980px){.toolbar{grid-template-columns:1fr 1fr}.content{grid-template-columns:1fr}}@media(max-width:550px){.toolbar{grid-template-columns:1fr}header{padding:18px}.shell{padding:0 12px}}
+</style></head><body>
+<header><h1>◉ <span>SMART PPE</span> <small style="font-size:13px;color:#a4b7cb">| AI COMPLIANCE MONITOR</small></h1><div class="tag" id="topState">AI STARTING</div></header>
+<main class="shell"><div class="toolbar"><div class="field"><label>WORKPLACE</label><select id="workplace"><option>Construction</option><option>Manufacturing</option><option>Warehouse</option><option>Hospital</option><option>Laboratory</option><option>Agriculture</option><option>Food Processing</option><option>Chemical Handling</option></select></div><div class="field"><label>CAMERA SOURCE</label><select id="cameras" aria-label="Select laptop or external webcam"><option value="">System default camera</option></select></div><button id="cameraBtn">Start camera</button><span id="aiIndicator" role="status" aria-live="polite" style="background:#19374a;border:1px solid #2c7184;border-radius:10px;padding:13px;color:#b7e9e9;min-width:155px;text-align:center">AI starting...</span><button id="alarmBtn">Test alarm</button></div>
+<div class="content"><section class="panel"><h2>LIVE CAMERA & WORKPLACE PPE DETECTIONS</h2><div class="camera"><video id="video" autoplay muted playsinline></video><canvas id="overlay"></canvas><div class="empty" id="empty">Start the camera; AI initializes automatically</div><div class="camhint">Keep one person in frame, with all protective equipment visible. Yellow boxes are experimental visual matches.</div></div><div class="smallfooter"><span id="cameraState">Camera off</span><span id="modelState">AI starting...</span></div></section><section class="panel"><h2>AUTOMATIC PPE ASSESSMENT</h2><div class="status amber" id="status"><strong id="statusText">AWAITING AI</strong><small id="statusDesc">AI starts automatically. Start the camera to begin scanning.</small></div><div class="summary" id="summary">No detections yet.</div><div class="summary" id="workplaceGuidance" aria-live="polite"></div><div class="summary" style="color:#f3cd88">Specialty AI attempts visual PPE recognition across workplaces. A visual match does not verify chemical resistance, material rating or respirator fit. Unrecognized equipment remains unverified, never automatically non-compliant.</div><h2>PPE INSPECTION BY BODY REGION</h2><div class="items" id="items"></div><div class="legend">Detected = PPE identified within the person’s corresponding body region. Possible missing = an explicit missing-PPE prediction near that region. Not verified = insufficient evidence. The checklist is an AI screening aid, not a safety certification.</div></section></div>
+<div class="bottom"><label><input type="checkbox" id="sound" checked> Alarm on repeated suspected violations</label><button id="screenshot">Save screenshot</button><span id="message">AI loads automatically. First model download needs an internet connection.</span></div>
+<div class="notice"><strong>Specialty PPE vision:</strong> The website automatically attempts an experimental browser AI model for medical masks, clinical gloves, gowns, shields and protective clothing. This requires an internet connection for the model download. It cannot verify respirator fit, PPE material properties, medical sterility, protective ratings or full legal compliance. Green approval is disabled for experimental-only checks. <strong>Workplace-specific sensor filtering:</strong> Only PPE categories configured for the selected workplace are displayed and assessed. For example, Hospital excludes hard hats and construction vests; unsupported medical PPE is listed for human checking. <strong>Detection limits:</strong> This industrial detector has NOT been clinically or locally validated. An experimental browser vision model attempts masks, gowns, gloves, face shields, protective suits and specialty PPE. These predictions are not clinically validated and still require human verification. A green screening popup only appears when <strong>every configured check is backed by the industrial model and visually detected</strong>; it does not replace workplace supervision or procedure-based PPE decisions. Multiple people, occlusion and poor camera framing still need manual verification. Camera video is processed locally in your browser after the AI assets load.</div><div class="footer">Model: constructelligence/construction-site-safety-hazards (AGPL-3.0). Runtime: ONNX Runtime Web (MIT). Philippine OSH research prototype · NOT workplace-certified · Independent local validation required.</div>
+        <div style="
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 15px;
+">
+    <img src="../SterENG/sterENGBG.png"
+         alt="SterlEng Company Logo"
+         style="width: 95px; height: auto;">
+
+         
+    <h1 style="
+        margin: 0;
+        font-size: 28px;
+        color: white;
+    ">
+        SterlEng Company
+    </h1>
+</div></main>
+<div class="modalbg" id="modal"><div class="modal" id="modalCard"><h2 id="modalTitle">⚠ POSSIBLE NON-COMPLIANCE</h2><p id="modalMessage"></p><button id="dismiss">Acknowledge warning</button></div></div><canvas id="work" width="640" height="640" hidden></canvas>
+<script>
+'use strict';
+const MODEL_URL='https://huggingface.co/constructelligence/construction-site-safety-hazards/resolve/main/buildvision-hazards-v0.3.onnx';
+const ORT_URL='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/ort.min.js';
+const LABELS=['person','hardhat','no-hardhat','safety vest','no-safety vest','no-mask','gloves','safety shoes','excavator','wheel loader','dump truck','goggles','no-goggles','no-gloves'];
+// Workplace-specific default PPE checks. Requirements must be validated against site policy and hazard assessments.
+// Item format: [label, detectedClass, missingClass, bodyRegion, personMatchZone].
+// null indicates a specialized experimental visual detector is used where possible.
+// Presets are hazard-screening templates, not blanket legal requirements.
+// Detection class null = candidate from browser zero-shot vision, NOT a clinically validated detector.
+const WORKPLACE_PRESETS={
+ Construction:{items:[['Hard hat',1,2,'Head','head'],['High-visibility vest',3,4,'Upper body','torso'],['Safety footwear',7,null,'Feet','feet'],['Safety gloves (if needed)',6,13,'Hands','hands'],['Safety goggles (if needed)',11,12,'Eyes','eyes']],note:'Construction: selected safety checks must be confirmed by the site safety officer; glove/eye requirements depend on the task.'},
+ Manufacturing:{items:[['Protective eyewear',11,12,'Eyes','eyes'],['Protective gloves',6,13,'Hands','hands'],['Safety footwear',7,null,'Feet','feet'],['Respirator when indicated',null,null,'Face','face']],note:'Manufacturing: process hazards determine when gloves, eye protection and respirators are mandatory.'},
+ Warehouse:{items:[['High-visibility vest',3,4,'Upper body','torso'],['Safety footwear',7,null,'Feet','feet']],note:'Warehouse: this template covers vehicle-handling areas; site rules may differ.'},
+ Hospital:{items:[['Medical mask / respirator (when indicated)',null,null,'Face','face'],['Protective goggles (when indicated)',11,12,'Eyes','eyes'],['Medical gloves (when indicated)',null,null,'Hands','hands'],['Protective gown (when indicated)',null,null,'Upper body','torso'],['Face shield (when indicated)',null,null,'Face','face']],note:'Hospital: experimental medical visual detector checks mask, goggles, gloves, gown-like clothing and face shield. It cannot certify clinical suitability, respirator fit, or sterile PPE.'},
+ Laboratory:{items:[['Protective goggles',11,12,'Eyes','eyes'],['Lab coat',null,null,'Upper body','torso'],['Appropriate protective gloves',null,null,'Hands','hands'],['Respirator (when indicated)',null,null,'Face','face']],note:'Laboratory: match PPE to chemical/biological exposure; industrial goggles detection is only a visual aid.'},
+ Agriculture:{items:[['Protective gloves',null,null,'Hands','hands'],['Protective boots',null,null,'Feet','feet'],['Eye protection (when indicated)',11,12,'Eyes','eyes'],['Chemical-resistant clothing (when indicated)',null,null,'Upper body','torso'],['Respirator (when indicated)',null,null,'Face','face']],note:'Agriculture: exposure-specific selection is essential, especially during pesticide application.'},
+ 'Food Processing':{items:[['Hair covering',null,null,'Head','head'],['Hygienic protective clothing',null,null,'Upper body','torso'],['Appropriate gloves (when indicated)',null,null,'Hands','hands'],['Slip-resistant footwear',null,null,'Feet','feet']],note:'Food processing: hygiene protocols and occupational hazards determine PPE and protective clothing.'},
+ 'Chemical Handling':{items:[['Chemical splash goggles',null,null,'Eyes','eyes'],['Chemical-resistant gloves',null,null,'Hands','hands'],['Protective suit / apron',null,null,'Upper body','torso'],['Respirator (when indicated)',null,null,'Face','face'],['Chemical-resistant footwear',null,null,'Feet','feet']],note:'Chemical handling: the safety data sheet and exposure assessment determine materials, ratings and fit.'}
+};
+
+function activeProfile(){return WORKPLACE_PRESETS[$('workplace').value]||{items:[],note:'Review workplace risk assessment.'};}
+// The selected workplace controls what detections can appear in the overlay and alerts.
+// Filtering is not a substitute for a clinical or laboratory-specific detection model.
+function activeDetectionClasses(){
+ const allowed=new Set([0]); // Person detection works in every environment.
+ for(const [,present,absent] of activeProfile().items){
+   if(present!==null)allowed.add(present);
+   if(absent!==null)allowed.add(absent);
+ }
+ return allowed;
+}
+function relevantDetections(detections){
+ const allowed=activeDetectionClasses();
+ return detections.filter(d=>allowed.has(d.c));
+}
+function clearWorkplaceResults(){
+ consecutive=0;successiveCompliant=0;lastDet=[];visionDetections=[];visionLast=0;visionAttemptAt=0;latestAssessment={alerts:[],supportedCount:0,verified:0,unknown:0,subject:false,allSupportedDetected:false};
+ $('modal').style.display='none';modalOpen=false;
+ const canvas=$('overlay');canvas.getContext('2d').clearRect(0,0,canvas.width,canvas.height);
+}
+function updateWorkplaceUI(){
+ $('workplaceGuidance').textContent='Workplace guidance: '+activeProfile().note;
+ if(activeProfile().items.some(item=>item[1]===null))loadMedicalVision();
+}
+// Experimental zero-shot PPE vision runs directly in the browser; no account or API key.
+// Terms are visual labels, NOT verification of ratings, material, sterility or correct use.
+const VISION_TERMS={
+ 'Medical mask / respirator (when indicated)':['person wearing surgical face mask','medical protective mask','N95 mask'],
+ 'Medical gloves (when indicated)':['medical examination gloves','person wearing latex gloves'],
+ 'Protective gown (when indicated)':['medical protective gown','isolation gown','medical coverall suit'],
+ 'Face shield (when indicated)':['clear face shield','protective face shield'],
+ 'Lab coat':['white laboratory coat','lab coat'],
+ 'Appropriate protective gloves':['person wearing protective gloves'],
+ 'Respirator (when indicated)':['industrial respirator mask','half face respirator','full face respirator'],
+ 'Protective gloves':['person wearing protective gloves'],
+ 'Protective boots':['rubber safety boots'],
+ 'Chemical-resistant clothing (when indicated)':['protective coverall suit'],
+ 'Hair covering':['hair net','medical hair cap'],
+ 'Hygienic protective clothing':['food processing protective clothing','white protective apron'],
+ 'Appropriate gloves (when indicated)':['person wearing gloves'],
+ 'Slip-resistant footwear':['safety shoes'],
+ 'Chemical splash goggles':['sealed safety goggles','protective goggles'],
+ 'Chemical-resistant gloves':['rubber protective gloves','heavy chemical gloves','protective work gloves'],
+ 'Protective suit / apron':['full body protective coverall','chemical protective suit','protective apron'],
+ 'Chemical-resistant footwear':['rubber safety boots','protective rubber boots']
+};
+let visionPipeline=null,visionBusy=false,visionLast=0,visionAttemptAt=0,visionDetections=[],visionStatus='not loaded',visionLoading=false;
+async function loadMedicalVision(){
+ if(visionPipeline||visionLoading)return;
+ visionLoading=true;visionStatus='loading';say('Loading experimental medical and specialty PPE vision model...');
+ try{
+   const mod=await import('https://cdn.jsdelivr.net/npm/@xenova/transformers@2.17.2/+esm');
+   mod.env.allowLocalModels=false;
+   visionPipeline=await mod.pipeline('zero-shot-object-detection','Xenova/owlvit-base-patch32',{quantized:true});
+   visionStatus='ready';$('modelState').textContent='Industrial + specialty AI ready';say('Specialty PPE vision loaded. Visual matches are preliminary; material and fit still require verification.');
+ }catch(e){console.error('Specialty AI',e);visionStatus='unavailable';$('modelState').textContent='Specialty model unavailable';say('Specialty PPE visual model unavailable: '+e.message);}
+ finally{visionLoading=false;}
+}
+async function runMedicalVision(){
+ if(!visionPipeline||visionBusy||!running)return;
+ const rows=activeProfile().items.filter(row=>row[1]===null && VISION_TERMS[row[0]]);
+ if(!rows.length){visionDetections=[];return;}
+ visionBusy=true;
+ try{
+   const c=document.createElement('canvas'),v=$('video');
+   c.width=v.videoWidth;c.height=v.videoHeight;
+   c.getContext('2d').drawImage(v,0,0,c.width,c.height);
+   const terms=[...new Set(rows.flatMap(row=>VISION_TERMS[row[0]]))];
+   const result=await visionPipeline(c.toDataURL('image/jpeg',.85),terms,{threshold:.12});
+   const fresh=[];
+   for(const r of result){
+     if(!r.box||r.score<.28)continue;
+     const label=rows.find(row=>VISION_TERMS[row[0]].includes(r.label));
+     if(!label)continue;
+     const b=r.box;
+     const x=b.xmin??b.x??0,y=b.ymin??b.y??0;
+     const w=(b.xmax??(x+b.width))-x,h=(b.ymax??(y+b.height))-y;
+     if(w>2&&h>2)fresh.push({x,y,w,h,c:-1,s:r.score,ppeName:label[0],experimental:true});
+   }
+   visionDetections=fresh;visionLast=Date.now();
+ }catch(e){console.error(e);visionStatus='error';say('Specialty AI processing error: '+e.message);}
+ finally{visionBusy=false;}
+}
+const REGION_ORDER=['Head','Eyes','Face','Upper body','Hands','Feet'];
+const REGION_RANGES={head:[0,.30],eyes:[.04,.35],face:[.06,.43],torso:[.17,.76],hands:[.27,.91],feet:[.69,1]};
+
+const $=x=>document.getElementById(x);let stream=null,session=null,running=false,inferBusy=false,frameCounter=0,lastDet=[],consecutive=0,successiveCompliant=0,lastPopup=0,modalOpen=false,audioCtx=null,modelBlob=null,latestAssessment={alerts:[],supportedCount:0,verified:0,unknown:0,subject:false,allSupportedDetected:false};
+const say=t=>{$('message').textContent=t;};
+function setStatus(txt,desc,type='amber'){$('status').className='status '+type;$('statusText').textContent=txt;$('statusDesc').textContent=desc;}
+function personRegionMatch(ppe,person,region){
+ // PPE center must lie inside the person box and its expected vertical body zone.
+ const cx=ppe.x+ppe.w/2,cy=ppe.y+ppe.h/2;
+ if(cx<person.x-0.08*person.w||cx>person.x+1.08*person.w)return false;
+ const r=REGION_RANGES[region]||[0,1],relative=(cy-person.y)/person.h;
+ return relative>=r[0]-.04&&relative<=r[1]+.04;
+}
+function refreshChecklist(det=lastDet){
+ const rows=activeProfile().items,root=$('items');root.replaceChildren();
+ const people=det.filter(d=>d.c===0&&d.s>=.45);
+ const subject=people.sort((a,b)=>b.w*b.h-a.w*a.h)[0];
+ const alerts=[];let verified=0,unknown=0;
+ const supportedCount=rows.length;let experimentalCount=0;
+ for(const [name,present,absent,region,zone] of rows){
+   const positive=!!subject && (present!==null?det.some(d=>d.c===present&&personRegionMatch(d,subject,zone)):(visionStatus==='ready'&&Date.now()-visionLast<6500&&visionDetections.some(d=>d.ppeName===name&&personRegionMatch(d,subject,zone))));
+   const negative=absent!==null&&!!subject&&det.some(d=>d.c===absent&&d.s>=.55&&personRegionMatch(d,subject,zone));
+   let state='Not verified',css='unknown',details='Insufficient visual evidence';
+   if(present===null&&visionStatus!=='ready'){state=visionStatus==='loading'?'AI loading':'Model unavailable';details='Experimental specialty AI needs to load; manual verification required';}
+   else if(present===null&&positive){state='Visual match';css='good';details='Experimental detection; PPE rating and suitability not verified';verified++;experimentalCount++;}
+   else if(!subject){details='No person confidently identified';}
+   else if(positive&&negative){details='Conflicting detection signals; check manually';}
+   else if(negative){state='Possible missing';css='bad';details='Needs confirmation';alerts.push(name);}
+   else if(positive){state='Detected';css='good';details='AI visual indication only';verified++;}
+   else{details='Item not confirmed in this frame';}
+   if(css==='unknown')unknown++;
+   const row=document.createElement('div');row.className='item';
+   const left=document.createElement('div'),title=document.createElement('strong'),sub=document.createElement('small');
+   title.textContent=name;sub.textContent=region+' · '+details;left.append(title,sub);
+   const pill=document.createElement('span');pill.className='pill '+css;pill.textContent=state;
+   row.append(left,pill);root.append(row);
+ }
+ latestAssessment={
+   alerts,
+   supportedCount,
+   verified,
+   unknown,
+   experimentalCount,
+   subject:!!subject,
+   allSupportedDetected:!!subject&&people.length===1&&supportedCount>0&&rows.every(r=>r[1]!==null)&&verified===supportedCount&&alerts.length===0
+ };
+ $('summary').textContent=!rows.length?'No universal PPE items for this workplace. Follow the workplace risk assessment; no automatic compliance decision.':subject?`Person identified · ${verified}/${supportedCount||rows.length} active items detected · ${unknown} unverified`:'No reliable person identified; equipment cannot be assigned to a worker.';
+ return alerts;
+}
+$('workplace').onchange=()=>{clearWorkplaceResults();updateWorkplaceUI();refreshChecklist([]);updateStatus([]);};
+async function loadScript(url){return new Promise((resolve,reject)=>{let s=document.createElement('script');s.src=url;s.onload=resolve;s.onerror=()=>reject(new Error('Unable to download AI runtime; check internet.'));document.head.append(s);});}
+let aiLoading=false;
+async function initializeAI(){
+  if(session||aiLoading)return;
+  aiLoading=true;
+  const indicator=$('aiIndicator');
+  indicator.textContent='AI initializing...';
+  $('modelState').textContent='AI loading...';
+  $('topState').textContent='AI LOADING';
+  say('Downloading browser AI runtime...');
+  try{
+    if(!window.ort)await loadScript(ORT_URL);
+    ort.env.wasm.numThreads=1;
+    ort.env.wasm.wasmPaths='https://cdn.jsdelivr.net/npm/onnxruntime-web@1.22.0/dist/';
+    say('Downloading PPE model. Please wait...');
+    let res=await fetch(MODEL_URL);
+    if(!res.ok)throw new Error('Model download HTTP '+res.status);
+    const bytes=new Uint8Array(await res.arrayBuffer());
+    say('Starting AI inference engine...');
+    session=await ort.InferenceSession.create(bytes,{executionProviders:['wasm'],graphOptimizationLevel:'all'});
+    $('modelState').textContent='AI ready';
+    $('topState').textContent='AI READY';
+    indicator.textContent='✓ AI ready';
+    indicator.style.color='#69efc4';
+    if(stream)updateStatus([]);
+    say(stream?'AI ready. Scanning the camera.':'AI ready. Start camera to scan.');
+  }catch(e){
+    console.error(e);
+    say('AI could not load: '+e.message);
+    $('modelState').textContent='AI unavailable';
+    $('topState').textContent='AI ERROR';
+    indicator.textContent='AI failed — retry';
+    indicator.style.color='#ffb7c2';
+    indicator.style.cursor='pointer';
+    indicator.onclick=initializeAI;
+    setStatus('AI UNAVAILABLE',e.message,'amber');
+  }finally{aiLoading=false;}
+}
+// Enumerate physical/video-driver devices. Browsers supply labels after camera permission.
+let cameraBusy=false;
+let activeCameraId='';
+function cameraName(device,index){
+  // Never invent camera brands/models: labels come directly from the browser/OS.
+  return device.label && device.label.trim() ? device.label.trim() : `Camera ${index+1} (allow access to show name)`;
+}
+async function enumerate(preferredId){
+  const picker=$('cameras');
+  if(!navigator.mediaDevices?.enumerateDevices){
+    picker.replaceChildren(new Option('Camera listing not supported',''));
+    return;
+  }
+  try{
+    const oldId=preferredId ?? picker.value;
+    const devices=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');
+    picker.replaceChildren();
+    picker.add(new Option('System default camera',''));
+    for(let i=0;i<devices.length;i++){
+      if(!devices[i].deviceId)continue;
+      picker.add(new Option(cameraName(devices[i],i),devices[i].deviceId));
+    }
+    // Retain the current selected camera when it still exists.
+    if(oldId && devices.some(d=>d.deviceId===oldId))picker.value=oldId;
+    else if(activeCameraId && devices.some(d=>d.deviceId===activeCameraId))picker.value=activeCameraId;
+    else picker.value='';
+    if(!devices.length)say('No camera found. Connect a webcam or enable your laptop camera, then check device permissions.');
+  }catch(e){say('Could not list camera devices: '+e.message);}
+}
+async function stopCamera(){
+  running=false;
+  if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+  $('video').pause();$('video').srcObject=null;
+  activeCameraId='';lastDet=[];visionDetections=[];
+  $('overlay').getContext('2d').clearRect(0,0,$('overlay').width,$('overlay').height);
+  $('cameraBtn').textContent='Start camera';$('cameraState').textContent='Camera off';
+  $('empty').style.display='flex';
+  setStatus('CAMERA OFF','Start the webcam to run AI detection.');
+}
+function cameraErrorText(e){
+  if(e.name==='NotAllowedError'||e.name==='PermissionDeniedError')return 'Camera access denied. Allow camera access in browser site permissions and Windows/macOS privacy settings.';
+  if(e.name==='NotFoundError'||e.name==='DevicesNotFoundError')return 'No available camera found. Connect your USB webcam or enable your laptop camera.';
+  if(e.name==='NotReadableError'||e.name==='TrackStartError')return 'Camera is busy or unavailable. Close Zoom, Teams, or another camera app and try again.';
+  if(e.name==='OverconstrainedError')return 'The selected camera is no longer connected. Choose another camera.';
+  if(e.name==='SecurityError')return 'Camera access is blocked by browser security settings.';
+  return e.message||'Unable to start camera.';
+}
+async function startCamera(){
+  if(cameraBusy)return;
+  if(!navigator.mediaDevices?.getUserMedia){
+    say('Camera requires a supported browser on HTTPS or localhost. For a deployed website, use HTTPS.');
+    setStatus('CAMERA UNAVAILABLE','Browser camera access requires HTTPS or localhost.');return;
+  }
+  cameraBusy=true;$('cameraBtn').disabled=true;
+  const requestedId=$('cameras').value;
+  try{
+    await stopCamera();
+    const video={width:{ideal:1280},height:{ideal:720},frameRate:{ideal:24,max:30}};
+    if(requestedId)video.deviceId={exact:requestedId};
+    try{
+      stream=await navigator.mediaDevices.getUserMedia({video,audio:false});
+    }catch(e){
+      // If the chosen camera was unplugged, offer default instead of crashing.
+      if(requestedId && (e.name==='NotFoundError'||e.name==='OverconstrainedError')){
+        stream=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720}},audio:false});
+        say('Previously selected camera disconnected; switched to system default.');
+      }else throw e;
+    }
+    const track=stream.getVideoTracks()[0];
+    activeCameraId=track.getSettings().deviceId||'';
+    track.addEventListener('ended',()=>{
+      if(stream && stream.getVideoTracks()[0]===track){void stopCamera();say('Camera disconnected or access was revoked. Select an available camera to reconnect.');void enumerate();}
+    });
+    $('video').srcObject=stream;
+    await $('video').play();
+    await enumerate(activeCameraId);
+    // Display the REAL camera label exposed by the device driver.
+    const label=track.label||$('cameras').selectedOptions[0]?.textContent||'System camera';
+    $('cameraState').textContent='Live · '+label;
+    $('cameraBtn').textContent='Stop camera';$('empty').style.display='none';
+    running=true;requestAnimationFrame(tick);
+    say('Connected to '+label+'. '+(session?'AI scanning.':'AI initializing.'));
+  }catch(e){
+    console.error('Camera',e);
+    if(stream){stream.getTracks().forEach(t=>t.stop());stream=null;}
+    const message=cameraErrorText(e);say(message);setStatus('CAMERA ERROR',message);
+    $('cameraState').textContent='Camera unavailable';
+    await enumerate(requestedId);
+  }finally{cameraBusy=false;$('cameraBtn').disabled=false;}
+}
+$('cameraBtn').onclick=()=>{if(cameraBusy)return;return stream?stopCamera():startCamera();};
+$('cameras').onchange=()=>{if(stream)void startCamera();};
+if(navigator.mediaDevices?.addEventListener){
+  navigator.mediaDevices.addEventListener('devicechange',async()=>{
+    await enumerate();
+    if(stream && activeCameraId){
+      const found=(await navigator.mediaDevices.enumerateDevices()).some(d=>d.kind==='videoinput'&&d.deviceId===activeCameraId);
+      if(!found){await stopCamera();say('Selected camera was disconnected. Choose another camera.');}
+    }
+  });
+}
+function letterbox(video){let can=$('work'),ctx=can.getContext('2d',{willReadFrequently:true});let w=video.videoWidth,h=video.videoHeight,scale=Math.min(640/w,640/h),rw=w*scale,rh=h*scale,dx=(640-rw)/2,dy=(640-rh)/2;ctx.fillStyle='rgb(114,114,114)';ctx.fillRect(0,0,640,640);ctx.drawImage(video,dx,dy,rw,rh);let pixels=ctx.getImageData(0,0,640,640).data;let arr=new Float32Array(3*640*640);for(let i=0;i<640*640;i++){arr[i]=pixels[i*4]/255;arr[409600+i]=pixels[i*4+1]/255;arr[819200+i]=pixels[i*4+2]/255;}return {arr,scale,dx,dy,w,h};}
+function iou(a,b){let x=Math.max(0,Math.min(a.x+a.w,b.x+b.w)-Math.max(a.x,b.x)),y=Math.max(0,Math.min(a.y+a.h,b.y+b.h)-Math.max(a.y,b.y));return x*y/(a.w*a.h+b.w*b.h-x*y+1e-9);}
+function decode(t,geo){let dims=t.dims,raw=t.data;if(dims.length!==3)throw Error('Unexpected model output shape: '+dims.join('x'));let ch=dims[1]===18?18:dims[2]===18?18:null;if(!ch)throw Error('Model output has '+dims.join('x')+'; expected 14 PPE classes');let n=dims[1]===18?dims[2]:dims[1],transposed=dims[1]===18,at=(i,k)=>transposed?raw[k*n+i]:raw[i*18+k];let proposals=[];for(let i=0;i<n;i++){let score=0,c=-1;for(let k=4;k<18;k++){let s=at(i,k);if(s>score){score=s;c=k-4;}}if(score<.38||c<0||c===5)continue;let cx=at(i,0),cy=at(i,1),w=at(i,2),h=at(i,3),x=(cx-w/2-geo.dx)/geo.scale,y=(cy-h/2-geo.dy)/geo.scale;let bw=w/geo.scale,bh=h/geo.scale;x=Math.max(0,x);y=Math.max(0,y);bw=Math.min(geo.w-x,bw);bh=Math.min(geo.h-y,bh);if(bw>3&&bh>3)proposals.push({x,y,w:bw,h:bh,c,s:score});}proposals.sort((a,b)=>b.s-a.s);let out=[];for(let p of proposals.slice(0,220)){if(out.some(q=>q.c===p.c&&iou(p,q)>.5))continue;out.push(p);if(out.length>70)break;}return out;}
+function paint(det){det=det.concat(visionDetections.filter(d=>Date.now()-visionLast<6500));let can=$('overlay'),v=$('video');if(!v.videoWidth)return;can.width=v.videoWidth;can.height=v.videoHeight;let ctx=can.getContext('2d');ctx.clearRect(0,0,can.width,can.height);for(let d of det){let violation=[2,4,12,13].includes(d.c),color=d.experimental?'#e8c875':violation?'#ff586d':d.c===0?'#7fb9ff':'#2be5ad';ctx.strokeStyle=color;ctx.lineWidth=Math.max(2,v.videoWidth/450);ctx.strokeRect(d.x,d.y,d.w,d.h);let name=(d.experimental?d.ppeName+' (experimental)':LABELS[d.c])+' '+Math.round(d.s*100)+'%';ctx.font=`bold ${Math.max(14,Math.round(can.width/65))}px Arial`;let tw=ctx.measureText(name).width+14;ctx.fillStyle=color;ctx.fillRect(d.x,Math.max(0,d.y-27),tw,25);ctx.fillStyle='#06121e';ctx.fillText(name,d.x+7,Math.max(18,d.y-8));}}
+function updateStatus(alerts){
+ if(!stream){setStatus('CAMERA OFF','Start the webcam to begin.');return;}
+ if(!session){setStatus('AI INITIALIZING','The model is loading automatically. Please wait.');return;}
+ if(activeProfile().items.length===0){setStatus('NO UNIVERSAL PPE REQUIREMENT','This workplace has no default PPE sensor checks. Follow the task risk assessment.','amber');return;}
+ if(alerts.length){setStatus('POSSIBLE NON-COMPLIANCE','AI flagged: '+alerts.join(', ')+'. Verification is required.','red');return;}
+ if(latestAssessment.experimentalCount>0&&latestAssessment.verified===latestAssessment.supportedCount){setStatus('VISUAL PPE MATCHES FOUND','All configured PPE types have a visual match, but specialist equipment ratings, chemical resistance and fit remain unverified.','amber');return;}
+ if(latestAssessment.allSupportedDetected){setStatus('SUPPORTED CHECKS DETECTED','All configured supported items were detected in this frame; not a certified workplace safety decision.','green');return;}
+ setStatus('INSPECTION INCOMPLETE','No confirmed violation, but one or more required checks are unverified or not supported by this model.','amber');
+}
+function alarm(){if(!$('sound').checked)return;try{audioCtx=audioCtx||new (window.AudioContext||window.webkitAudioContext)();audioCtx.resume();let now=audioCtx.currentTime;for(let i=0;i<4;i++){let osc=audioCtx.createOscillator(),gain=audioCtx.createGain();osc.type='sawtooth';osc.frequency.setValueAtTime(i%2?680:920,now+i*.22);gain.gain.setValueAtTime(.0001,now+i*.22);gain.gain.exponentialRampToValueAtTime(.12,now+i*.22+.02);gain.gain.exponentialRampToValueAtTime(.0001,now+i*.22+.19);osc.connect(gain).connect(audioCtx.destination);osc.start(now+i*.22);osc.stop(now+i*.22+.2);}}catch(e){say('Sound unavailable: '+e.message);}}
+$('alarmBtn').onclick=alarm;
+function showModal(kind,title,message,buttonText='Acknowledge'){
+ let now=Date.now();
+ if(now-lastPopup<8000||modalOpen)return;
+ lastPopup=now;modalOpen=true;
+ $('modalTitle').textContent=title;
+ $('modalMessage').textContent=message;
+ $('dismiss').textContent=buttonText;
+ $('modalCard').className=kind==='success'?'modal success':'modal';
+ $('modal').style.display='flex';
+ if(kind!=='success')alarm();
+}
+function triggerWarning(alerts){showModal('warning','⚠ POSSIBLE NON-COMPLIANCE','AI detected possible missing PPE: '+alerts.join(', ')+'. Please verify the worker immediately.','Acknowledge warning');}
+function triggerCompliance(){showModal('success','✅ SUPPORTED PPE DETECTED','All configured supported PPE checks were detected repeatedly. Safety officer verification is still necessary.','Acknowledge');}
+$('dismiss').onclick=()=>{$('modal').style.display='none';modalOpen=false;};
+async function tick(){if(!running)return;let v=$('video');if(session&&!inferBusy&&v.readyState>=2){inferBusy=true;try{let g=letterbox(v);let tensor=new ort.Tensor('float32',g.arr,[1,3,640,640]);let results=await session.run({[session.inputNames[0]]:tensor});let det=relevantDetections(decode(results[session.outputNames[0]],g));lastDet=det;if(Date.now()-visionAttemptAt>3500&&!visionBusy&&visionPipeline){visionAttemptAt=Date.now();void runMedicalVision();}paint(det);let alerts=refreshChecklist(det);updateStatus(alerts);if(alerts.length){consecutive+=1;successiveCompliant=0;if(consecutive>=3){triggerWarning(alerts);consecutive=0;}}else{consecutive=0;if(latestAssessment.allSupportedDetected){successiveCompliant+=1;if(successiveCompliant>=4){triggerCompliance();successiveCompliant=0;}}else{successiveCompliant=0;}}}catch(e){console.error(e);say('AI processing error: '+e.message);setStatus('AI ERROR',e.message);session=null;$('aiIndicator').textContent='AI failed — retry';$('aiIndicator').onclick=initializeAI;}finally{inferBusy=false;}}if(running)setTimeout(()=>requestAnimationFrame(tick),140);}
+$('screenshot').onclick=()=>{if(!stream||!$('video').videoWidth){say('Start the camera first.');return;}let c=document.createElement('canvas'),v=$('video'),o=$('overlay');c.width=v.videoWidth;c.height=v.videoHeight;let ctx=c.getContext('2d');ctx.drawImage(v,0,0);ctx.drawImage(o,0,0);let a=document.createElement('a');a.download='PPE-AI-'+Date.now()+'.png';a.href=c.toDataURL('image/png');a.click();};
+updateWorkplaceUI();refreshChecklist([]);if(navigator.mediaDevices?.enumerateDevices)enumerate(); initializeAI();
+</script></body></html>
